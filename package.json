@@ -1,159 +1,150 @@
 {
-    "name":  "sanctuary",
-    "version":  "0.1.0",
-    "description":  "AI-Powered Church Presentation \u0026 Broadcast Platform",
-    "author":  "EcclesiaSync",
-    "license":  "MIT",
-    "main":  "dist/main/main/index.js",
-    "scripts":  {
-                    "dev":  "concurrently \"npm run dev:main\" \"npm run dev:renderer\"",
-                    "dev:main":  "tsc -p tsconfig.main.json --watch",
-                    "dev:renderer":  "vite",
-                    "build":  "npm run build:renderer \u0026\u0026 npm run build:main",
-                    "build:main":  "tsc -p tsconfig.main.json",
-                    "build:renderer":  "vite build",
-                    "start":  "electron dist/main/main/index.js",
-                    "test":  "vitest run",
-                    "test:watch":  "vitest",
-                    "test:ai":  "vitest run --reporter=verbose tests/ai/",
-                    "lint":  "eslint src/ --ext .ts,.tsx",
-                    "typecheck":  "tsc --noEmit",
-                    "format":  "prettier --write \"src/**/*.{ts,tsx,css}\"",
-                    "postinstall":  "electron-builder install-app-deps",
-                    "package:win":  "electron-builder --win",
-                    "package:mac":  "electron-builder --mac",
-                    "package:all":  "electron-builder --win --mac",
-                    "build:ai":  "python -m PyInstaller --onefile --distpath build-ai src/main/ai/vosk_bridge.py"
-                },
-    "dependencies":  {
-                         "better-sqlite3":  "^11.3.0",
-                         "electron-store":  "^8.2.0",
-                         "electron-updater":  "^6.3.4",
-                         "fast-xml-parser":  "^5.11.1",
-                         "framer-motion":  "^13.1.1",
-                         "lucide-react":  "^1.39.0",
-                         "node-machine-id":  "^1.1.12",
-                         "obs-websocket-js":  "^5.0.8",
-                         "uuid":  "^14.0.2",
-                         "zod":  "^4.5.4"
-                     },
-    "devDependencies":  {
-                            "@testing-library/jest-dom":  "^6.5.0",
-                            "@testing-library/react":  "^16.0.1",
-                            "@types/better-sqlite3":  "^7.6.11",
-                            "@types/react":  "^18.3.5",
-                            "@types/react-dom":  "^18.3.0",
-                            "@types/uuid":  "^10.0.0",
-                            "@typescript-eslint/eslint-plugin":  "^8.4.0",
-                            "@typescript-eslint/parser":  "^8.4.0",
-                            "@vitejs/plugin-react":  "^4.3.1",
-                            "concurrently":  "^8.2.2",
-                            "electron":  "^32.0.2",
-                            "electron-builder":  "^24.13.3",
-                            "eslint":  "^8.57.0",
-                            "jsdom":  "^25.0.0",
-                            "prettier":  "^3.3.3",
-                            "react":  "^18.3.1",
-                            "react-dom":  "^18.3.1",
-                            "react-router-dom":  "^6.26.1",
-                            "typescript":  "^5.5.4",
-                            "vite":  "^5.4.3",
-                            "vitest":  "^2.0.5",
-                            "zustand":  "^4.5.5"
-                        },
-    "build":  {
-                  "appId": "com.sanctuary.app", "publish": [{ "provider": "github", "owner": "lengolearnonline-droid", "repo": "sanctuary" }],
-                  "productName":  "Sanctuary",
-                  "directories":  {
-                                      "buildResources":  "build",
-                                      "output":  "release"
-                                  },
-                  "files":  [
-                                "dist/**/*",
-                                "bible-data/**/*"
-                            ],
-                  "win":  {
-                              "target":  [
-                                             {
-                                                 "target":  "nsis",
-                                                 "arch":  [
-                                                              "x64"
-                                                          ]
-                                             }
-                                         ],
-                              "publisherName":  "EcclesiaSync"
-                          },
-                  "nsis":  {
-                               "oneClick":  false,
-                               "allowToChangeInstallationDirectory":  true,
-                               "createDesktopShortcut":  true,
-                               "createStartMenuShortcut":  true,
-                               "shortcutName":  "Sanctuary",
-                               "uninstallDisplayName":  "Sanctuary"
-                           },
-                  "extraResources": [
+  "name": "sanctuary",
+  "version": "0.1.0",
+  "description": "AI-Powered Church Presentation & Broadcast Platform",
+  "author": "EcclesiaSync",
+  "license": "MIT",
+  "main": "dist/main/main/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:main\" \"npm run dev:renderer\"",
+    "dev:main": "tsc -p tsconfig.main.json --watch",
+    "dev:renderer": "vite",
+    "build": "npm run build:renderer && npm run build:main",
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:renderer": "vite build",
+    "start": "electron dist/main/main/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ai": "vitest run --reporter=verbose tests/ai/",
+    "lint": "eslint src/ --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
+    "postinstall": "electron-builder install-app-deps",
+    "package:win": "electron-builder --win",
+    "package:mac": "electron-builder --mac",
+    "package:all": "electron-builder --win --mac",
+    "build:ai": "python -m PyInstaller --onefile --distpath build-ai src/main/ai/vosk_bridge.py"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.3.4",
+    "fast-xml-parser": "^5.11.1",
+    "framer-motion": "^13.1.1",
+    "lucide-react": "^1.39.0",
+    "node-machine-id": "^1.1.12",
+    "obs-websocket-js": "^5.0.8",
+    "uuid": "^14.0.2",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.4.0",
+    "@typescript-eslint/parser": "^8.4.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^8.2.2",
+    "electron": "^32.0.2",
+    "electron-builder": "^24.13.3",
+    "eslint": "^8.57.0",
+    "jsdom": "^25.0.0",
+    "prettier": "^3.3.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.1",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.3",
+    "vitest": "^2.0.5",
+    "zustand": "^4.5.5"
+  },
+  "build": {
+    "appId": "com.sanctuary.app",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "lengolearnonline-droid",
+        "repo": "sanctuary"
+      }
+    ],
+    "productName": "Sanctuary",
+    "directories": {
+      "buildResources": "build",
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "bible-data/**/*"
+    ],
+    "win": {
+      "target": [
         {
-          "from": "build-ai/",
-           
-          "filter": ["**/*"]
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "publisherName": "EcclesiaSync"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Sanctuary",
+      "uninstallDisplayName": "Sanctuary"
+    },
+    "extraResources": [
+      {
+        "from": "bible-data/",
+        "to": "bible-data/",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "build-ai/",
+        "to": ".",
+        "filter": [
+          "vosk_bridge.exe"
+        ]
+      },
+      {
+        "from": "src/main/ai/model/",
+        "to": "model/",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         },
         {
-          "from": "src/main/ai/model/",
-          "to": "model/",
-          "filter": ["**/*"]
-        },
-                                         {
-                                             "from":  "bible-data/",
-                                             "to":  "bible-data/",
-                                             "filter":  [
-                                                            "**/*"
-                                                        ]
-                                         },
-                                         {
-                                             "from":  "build-ai",
-                                             "to":  ".",
-                                             "filter":  [
-                                                            "ai_bridge.exe",
-                                                            "ai_bridge",
-                                                            "vosk_bridge.exe",
-                                                            "vosk_bridge"
-                                                        ]
-                                         },
-                                         {
-                                             "from":  "src/main/ai/model",
-                                             "to":  "model",
-                                             "filter":  [
-                                                            "**/*"
-                                                        ]
-                                         }
-                                     ],
-                  "mac":  {
-                              "category":  "public.app-category.productivity",
-                              "target":  [
-                                             {
-                                                 "target":  "dmg",
-                                                 "arch":  [
-                                                              "x64",
-                                                              "arm64"
-                                                          ]
-                                             },
-                                             {
-                                                 "target":  "zip",
-                                                 "arch":  [
-                                                              "x64",
-                                                              "arm64"
-                                                          ]
-                                             }
-                                         ]
-                          },
-                  "dmg":  {
-                              "title":  "Sanctuary"
-                          }
-              },
-    "optionalDependencies":  {
-                                 "grandiose":  "^0.4.0"
-                             }
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "dmg": {
+      "title": "Sanctuary"
+    }
+  },
+  "optionalDependencies": {
+    "grandiose": "^0.4.0"
+  }
 }
-
-
-
