@@ -52,7 +52,7 @@ jobs:
         shell: powershell
 
       - name: Package Electron App (Windows)
-        run: npm run package:win
+        run: npx electron-builder --win -p always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -63,6 +63,7 @@ jobs:
           path: |
             release/*.exe
             release/*.zip
+
 
 
 

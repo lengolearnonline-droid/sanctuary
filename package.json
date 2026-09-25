@@ -62,7 +62,7 @@
                             "zustand":  "^4.5.5"
                         },
     "build":  {
-                  "appId":  "com.sanctuary.app",
+                  "appId": "com.sanctuary.app", "publish": [{ "provider": "github", "owner": "lengolearnonline-droid", "repo": "sanctuary" }],
                   "productName":  "Sanctuary",
                   "directories":  {
                                       "buildResources":  "build",
@@ -154,5 +154,6 @@
                                  "grandiose":  "^0.4.0"
                              }
 }
+
 
 
