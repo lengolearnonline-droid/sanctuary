@@ -37,11 +37,19 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Disable Windows Defender scanning (Prevents EBUSY locks on exe)
+        run: Add-MpPreference -ExclusionPath $env:GITHUB_WORKSPACE
+        shell: powershell
+
       - name: Build Python AI Bridge
         run: npm run build:ai
 
       - name: Build Application (TypeScript)
         run: npm run build
+
+      - name: Wait for Antivirus to release locks
+        run: Start-Sleep -Seconds 15
+        shell: powershell
 
       - name: Package Electron App (Windows)
         run: npm run package:win
@@ -55,6 +63,7 @@ jobs:
           path: |
             release/*.exe
             release/*.zip
+
 
 
 
