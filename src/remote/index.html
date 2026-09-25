@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sanctuary Remote</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --surface: #1e1e1e;
+      --primary: #4F46E5;
+      --text: #F9FAFB;
+      --text-dim: #9CA3AF;
+      --border: #374151;
+      --radius: 12px;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .header {
+      background: var(--surface);
+      padding: 16px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .status {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #EF4444; /* red for disconnected */
+    }
+    .status.connected {
+      background: #10B981; /* green */
+    }
+    .container {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    button {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 20px;
+      border-radius: var(--radius);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active {
+      background: var(--border);
+    }
+    button.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    button.primary:active {
+      opacity: 0.8;
+    }
+    button.full {
+      grid-column: 1 / -1;
+    }
+    .search-box {
+      display: flex;
+      gap: 8px;
+    }
+    input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 16px;
+      border-radius: var(--radius);
+      font-size: 16px;
+      outline: none;
+    }
+    input:focus {
+      border-color: var(--primary);
+    }
+    .search-btn {
+      padding: 16px 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div style="font-weight: bold; font-size: 18px;">Sanctuary Remote</div>
+    <div id="status" class="status"></div>
+  </div>
+
+  <div class="container">
+    <div class="search-box">
+      <input type="text" id="verse-input" placeholder="Search scripture (e.g. John 3:16)" enterkeyhint="go" />
+      <button class="primary search-btn" id="btn-show">Show</button>
+    </div>
+
+    <div class="grid">
+      <button id="btn-prev">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Previous
+      </button>
+      <button id="btn-next">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        Next
+      </button>
+      <button class="full" id="btn-clear" style="color: #EF4444; border-color: rgba(239, 68, 68, 0.3);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        Clear Screen
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let ws;
+    const statusEl = document.getElementById('status');
+    const inputEl = document.getElementById('verse-input');
+
+    function connect() {
+      // Connect to the same host over WS
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(protocol + '//' + window.location.host);
+
+      ws.onopen = () => {
+        statusEl.classList.add('connected');
+      };
+
+      ws.onclose = () => {
+        statusEl.classList.remove('connected');
+        setTimeout(connect, 2000); // Reconnect
+      };
+
+      ws.onerror = (err) => {
+        console.error('WS Error', err);
+      };
+    }
+
+    function sendCommand(action, data = {}) {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ action, ...data }));
+      }
+    }
+
+    document.getElementById('btn-prev').addEventListener('click', () => sendCommand('PREV_SLIDE'));
+    document.getElementById('btn-next').addEventListener('click', () => sendCommand('NEXT_SLIDE'));
+    document.getElementById('btn-clear').addEventListener('click', () => sendCommand('CLEAR_ALL'));
+    
+    document.getElementById('btn-show').addEventListener('click', () => {
+      const ref = inputEl.value.trim();
+      if (ref) {
+        sendCommand('SHOW_VERSE', { reference: ref });
+        inputEl.blur();
+      }
+    });
+
+    inputEl.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('btn-show').click();
+      }
+    });
+
+    connect();
+  </script>
+</body>
+</html>

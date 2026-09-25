@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // Sanctuary — Electron Preload Script
 // ============================================================
 //
@@ -253,6 +253,11 @@ const sanctuaryAPI = {
       ipcRenderer.invoke('recent:list', type, limit),
   },
 
+  // ---- Remote Control ----
+  remote: {
+    getInfo: () => ipcRenderer.invoke('remote:get_info')
+  },
+
   // ---- AI / Speech ----
   ai: {
     sendAudio: (buffer: ArrayBuffer) => 
@@ -287,3 +292,4 @@ contextBridge.exposeInMainWorld('sanctuary', sanctuaryAPI);
 
 // Type declaration for the renderer
 export type SanctuaryAPI = typeof sanctuaryAPI;
+

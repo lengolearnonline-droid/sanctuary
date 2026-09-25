@@ -337,6 +337,8 @@ export function SettingsPage() {
         <VMixSettingsPanel />
         <DataManagementPanel />
 
+        <RemoteControlPanel />
+
         <AIMicSettingsPanel />
 
         {/* AI Voice Control Settings */}
@@ -1042,6 +1044,55 @@ function AIMicSettingsPanel() {
             Save
           </Button>
         </div>
+      </div>
+    </Panel>
+  );
+}
+
+function RemoteControlPanel() {
+  const [remoteInfo, setRemoteInfo] = useState<{ip: string, port: number, url: string} | null>(null);
+
+  useEffect(() => {
+    async function loadInfo() {
+      try {
+        if (window.sanctuary && window.sanctuary.remote) {
+          const info = await window.sanctuary.remote.getInfo();
+          setRemoteInfo(info);
+        }
+      } catch (e) {
+        console.error('Failed to get remote info', e);
+      }
+    }
+    loadInfo();
+  }, []);
+
+  return (
+    <Panel 
+      title={<span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>📱 Mobile Remote Control</span>}
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>
+          Control slides and scriptures from your smartphone or tablet. Connect both devices to the same Wi-Fi network and scan the QR code below.
+        </p>
+
+        {remoteInfo ? (
+          <div style={{ display: 'flex', gap: 'var(--space-6)', alignItems: 'center', background: 'var(--color-bg-primary)', padding: 'var(--space-4)', borderRadius: 'var(--radius-md)' }}>
+            <div style={{ background: 'white', padding: '16px', borderRadius: '8px' }}>
+              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(remoteInfo.url)}`} alt="QR Code" width={150} height={150} />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+              <span style={{ fontSize: '12px', textTransform: 'uppercase', color: 'var(--color-text-secondary)', fontWeight: 600 }}>Remote URL</span>
+              <a href={remoteInfo.url} target="_blank" rel="noreferrer" style={{ color: 'var(--color-accent)', fontSize: '18px', textDecoration: 'none', fontWeight: 500 }}>
+                {remoteInfo.url}
+              </a>
+              <span style={{ color: 'var(--color-text-secondary)', fontSize: '14px', marginTop: '8px' }}>
+                Type this URL into your phone's browser, or scan the QR code to connect instantly.
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div>Loading remote server info...</div>
+        )}
       </div>
     </Panel>
   );

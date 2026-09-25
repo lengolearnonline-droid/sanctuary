@@ -791,6 +791,21 @@ async function initializeApp(): Promise<void> {
   const { VoskEngine } = require('./ai/VoskEngine');
   const { ScriptureExtractor } = require('./ai/ScriptureExtractor');
   const { CommandGateway } = require('./ai/CommandGateway');
+  const { RemoteServer } = require('./remote/RemoteServer');
+  const remoteServer = new RemoteServer();
+  remoteServer.start();
+  
+  // Hook remote control up to command gateway
+  remoteServer.on('message', (data: any, ws: any) => {
+    if (data.action === 'NEXT_SLIDE') commandGateway.executeCommand({ intent: 'next_slide', parameters: {} }, programWindow, stageWindow, mainWindow);
+    if (data.action === 'PREV_SLIDE') commandGateway.executeCommand({ intent: 'previous_slide', parameters: {} }, programWindow, stageWindow, mainWindow);
+    if (data.action === 'CLEAR_ALL') commandGateway.executeCommand({ intent: 'clear_all', parameters: {} }, programWindow, stageWindow, mainWindow);
+    if (data.action === 'SHOW_VERSE' && data.reference) commandGateway.executeCommand({ intent: 'show_scripture', parameters: { reference: data.reference } }, programWindow, stageWindow, mainWindow);
+  });
+  
+  ipcMain.handle('remote:get_info', () => {
+    return { ip: remoteServer.getLocalIp(), port: remoteServer.port, url: `http://${remoteServer.getLocalIp()}:${remoteServer.port}` };
+  });
   
   voskEngine = new VoskEngine();
   const commandGateway = new CommandGateway();
@@ -1003,5 +1018,6 @@ process.on('unhandledRejection', (reason) => {
 });
 
 }
+
 
 
