@@ -71,7 +71,7 @@ export class VoskEngine extends EventEmitter {
       });
 
       this.pythonProcess.on('close', (code) => {
-        console.log(Vosk Bridge exited with code );
+        console.log(`Vosk Bridge exited with code ${code}`);
         this.isReady = false;
       });
 
@@ -103,4 +103,5 @@ export class VoskEngine extends EventEmitter {
     this.isReady = false;
   }
 }
+
 
