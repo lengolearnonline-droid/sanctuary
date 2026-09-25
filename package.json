@@ -23,7 +23,7 @@
                     "package:win":  "electron-builder --win",
                     "package:mac":  "electron-builder --mac",
                     "package:all":  "electron-builder --win --mac",
-                    "build:ai":  "python -m PyInstaller --onefile --distpath build-ai src/main/ai/ai_bridge.py"
+                    "build:ai":  "python -m PyInstaller --onefile --distpath build-ai src/main/ai/vosk_bridge.py"
                 },
     "dependencies":  {
                          "better-sqlite3":  "^11.3.0",
@@ -91,7 +91,17 @@
                                "shortcutName":  "Sanctuary",
                                "uninstallDisplayName":  "Sanctuary"
                            },
-                  "extraResources":  [
+                  "extraResources": [
+        {
+          "from": "build-ai/",
+          "to": "/",
+          "filter": ["**/*"]
+        },
+        {
+          "from": "src/main/ai/model/",
+          "to": "model/",
+          "filter": ["**/*"]
+        },
                                          {
                                              "from":  "bible-data/",
                                              "to":  "bible-data/",
@@ -144,3 +154,4 @@
                                  "grandiose":  "^0.4.0"
                              }
 }
+
