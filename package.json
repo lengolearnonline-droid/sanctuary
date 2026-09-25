@@ -94,7 +94,7 @@
                   "extraResources": [
         {
           "from": "build-ai/",
-          "to": "/",
+           
           "filter": ["**/*"]
         },
         {
@@ -154,4 +154,5 @@
                                  "grandiose":  "^0.4.0"
                              }
 }
+
 
