@@ -23,7 +23,7 @@
     "package:win": "electron-builder --win",
     "package:mac": "electron-builder --mac",
     "package:all": "electron-builder --win --mac",
-    "build:ai": "python -m PyInstaller --onefile --distpath build-ai src/main/ai/vosk_bridge.py"
+    "build:ai": "python -m PyInstaller --onefile --collect-all vosk --distpath build-ai src/main/ai/vosk_bridge.py"
   },
   "dependencies": {
     "better-sqlite3": "^11.3.0",
