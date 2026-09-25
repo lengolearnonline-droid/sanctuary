@@ -139,7 +139,7 @@ export function SettingsPage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: 'var(--color-text-secondary)' }}>License Key:</span>
                     <span style={{ fontFamily: 'monospace' }}>
-                      {licenseInfo.licenseKey ? '••••-••••-••••-' + licenseInfo.licenseKey.slice(-4) : 'N/A'}
+                      {licenseInfo.licenseKey ? 'ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½-' + licenseInfo.licenseKey.slice(-4) : 'N/A'}
                     </span>
                   </div>
                 </div>
@@ -336,6 +336,8 @@ export function SettingsPage() {
         <OBSSettingsPanel />
         <VMixSettingsPanel />
         <DataManagementPanel />
+
+        <AIMicSettingsPanel />
 
         {/* AI Voice Control Settings */}
         <Panel 
@@ -980,4 +982,68 @@ function DataManagementPanel() {
 
 
 
+
+
+function AIMicSettingsPanel() {
+  const [microphones, setMicrophones] = useState<MediaDeviceInfo[]>([]);
+  const [selectedMicId, setSelectedMicId] = useState<string>('');
+
+  useEffect(() => {
+    async function loadMics() {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioInputs = devices.filter(d => d.kind === 'audioinput');
+        setMicrophones(audioInputs);
+        const savedMic = localStorage.getItem('ai.microphoneId') || '';
+        setSelectedMicId(savedMic);
+      } catch(e) {
+        console.error('Failed to load microphones', e);
+      }
+    }
+    loadMics();
+  }, []);
+
+  const handleSave = () => {
+    localStorage.setItem('ai.microphoneId', selectedMicId);
+    toast.success('Microphone Saved', 'AI will use the selected microphone next time you start it.');
+  };
+
+  return (
+    <Panel 
+      title={<span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>??? AI Speech Microphone</span>}
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>
+          Select the microphone used by the offline AI engine to capture voice commands and detect scriptures.
+        </p>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+          <select 
+            value={selectedMicId} 
+            onChange={e => setSelectedMicId(e.target.value)}
+            style={{
+              padding: '8px 12px',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--color-surface-border)',
+              background: 'var(--color-bg-primary)',
+              color: 'var(--color-text-primary)',
+              width: '100%',
+              maxWidth: '400px'
+            }}
+          >
+            <option value="">Default System Microphone</option>
+            {microphones.map(mic => (
+              <option key={mic.deviceId} value={mic.deviceId}>
+                {mic.label || `Microphone (${mic.deviceId.slice(0, 5)}...)`}
+              </option>
+            ))}
+          </select>
+          <Button variant="primary" icon={Save} onClick={handleSave}>
+            Save
+          </Button>
+        </div>
+      </div>
+    </Panel>
+  );
+}
 

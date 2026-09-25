@@ -99,11 +99,18 @@ export function HelpPage() {
             </div>
           </Panel>
 
-          <Panel title={<span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Book size={18} /> Documentation</span>}>
+          <Panel title={<span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Book size={18} /> Video Tutorials</span>}>
             <p style={{ color: 'var(--color-text-secondary)', margin: '0 0 var(--space-4) 0' }}>
-              Check out our comprehensive guides to learn how to master Sanctuary.
+              Check out our video tutorials on YouTube to learn how to master Sanctuary.
             </p>
-            <Button variant="secondary" icon={ExternalLink} disabled>Online Manual (Coming Soon)</Button>
+            <a 
+              href="https://www.youtube.com/playlist?list=PLSgLEEBlnsJM" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'none' }}
+            >
+              <Button variant="secondary" icon={ExternalLink}>Watch YouTube Playlist</Button>
+            </a>
           </Panel>
           
         </div>

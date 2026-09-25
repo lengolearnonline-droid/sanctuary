@@ -68,7 +68,8 @@ export function WorkspaceHeader() {
                         window.sanctuary.ai.sendAudio(buffer);
                       }
                     });
-                    await audioCapture.start();
+                    const selectedMicId = localStorage.getItem('ai.microphoneId') || undefined;
+                    await audioCapture.start(selectedMicId);
                   setIsMicActive(true);
                 } catch (e: any) {
                   console.error("Failed to start mic", e);
