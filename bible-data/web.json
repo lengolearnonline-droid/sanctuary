@@ -1,0 +1,30 @@
+{
+  "name": "World English Bible",
+  "abbreviation": "WEB",
+  "books": [
+    {
+      "name": "Genesis",
+      "chapters": [
+        {
+          "number": 1,
+          "verses": [
+            { "verse": 1, "text": "In the beginning, God created the heavens and the earth." },
+            { "verse": 2, "text": "The earth was formless and empty. Darkness was on the surface of the deep and God's Spirit was hovering over the surface of the waters." },
+            { "verse": 3, "text": "God said, 'Let there be light,' and there was light." }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "John",
+      "chapters": [
+        {
+          "number": 3,
+          "verses": [
+            { "verse": 16, "text": "For God so loved the world, that he gave his one and only Son, that whoever believes in him should not perish, but have eternal life." }
+          ]
+        }
+      ]
+    }
+  ]
+}

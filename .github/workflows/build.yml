@@ -1,0 +1,45 @@
+name: Build and Release Sanctuary
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    name: Build Windows Application
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # NDI 'grandiose' relies on native C++ compilation (node-gyp)
+      # windows-latest comes with Visual Studio Build Tools pre-installed.
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Application (TypeScript)
+        run: npm run build
+
+      - name: Package Electron App (Windows)
+        run: npm run package:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sanctuary-Windows-Build
+          path: |
+            release/*.exe
+            release/*.zip
+
