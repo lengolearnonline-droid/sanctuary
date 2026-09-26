@@ -35,17 +35,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyinstaller vosk
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
+      - name: Setup MSVC environment
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Install Dependencies
-        env:
-          GYP_MSVS_VERSION: 2022
-        run: |
-          $NodeDir = Split-Path (Get-Command node).Source
-          npm install -g npm@latest node-gyp --prefix $NodeDir
-          npm config set msvs_version 2022
-          npm install
+        run: npm install
 
       - name: Disable Windows Defender scanning (Prevents EBUSY locks on exe)
         run: Add-MpPreference -ExclusionPath $env:GITHUB_WORKSPACE
