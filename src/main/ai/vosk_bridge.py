@@ -3,11 +3,14 @@ import json
 import os
 from vosk import Model, KaldiRecognizer, SetLogLevel
 
-SetLogLevel(-1)
+SetLogLevel(0)
 
 def log(msg):
-    with open('python_internal.log', 'a') as f:
-        f.write(msg + '\n')
+    try:
+        with open('python_internal.log', 'a') as f:
+            f.write(msg + '\n')
+    except:
+        pass
     print(json.dumps({"type": "info", "message": msg}), flush=True)
 
 def main():
@@ -16,7 +19,7 @@ def main():
         log("Missing model path argument")
         sys.exit(1)
 
-    model_path = sys.argv[1]
+    import ctypes; model_path = os.path.abspath(sys.argv[1]); buf = ctypes.create_unicode_buffer(256); ctypes.windll.kernel32.GetShortPathNameW(model_path, buf, 256); model_path = buf.value if buf.value else model_path
     log(f"Model path: {model_path}")
     
     if not os.path.exists(model_path):
@@ -29,7 +32,7 @@ def main():
         log("Loading KaldiRecognizer...")
         rec = KaldiRecognizer(model, 16000)
         log("Loaded KaldiRecognizer successfully")
-    except Exception as e:
+    except BaseException as e:
         log(f"Exception: {str(e)}")
         sys.exit(1)
 
@@ -38,18 +41,29 @@ def main():
 
     # Read audio chunks from stdin and process them
     # Electron will send raw PCM 16kHz 16-bit mono bytes
-    while True:
+    try:
+        while True:
         # Read 4000 bytes at a time (standard chunk size)
-        data = sys.stdin.buffer.read(4000)
-        if len(data) == 0:
-            break
+            data = sys.stdin.buffer.read(4000)
+            if len(data) == 0:
+                break
             
-        if rec.AcceptWaveform(data):
-            res = rec.Result()
-            print(json.dumps({"type": "result", "data": res}), flush=True)
-        else:
-            res = rec.PartialResult()
-            print(json.dumps({"type": "partial", "data": res}), flush=True)
+            if rec.AcceptWaveform(data):
+                res = rec.Result()
+                print(json.dumps({"type": "result", "data": res}), flush=True)
+            else:
+                res = rec.PartialResult()
+                print(json.dumps({"type": "partial", "data": res}), flush=True)
+    except BaseException as e:
+        log(f"Loop Exception: {str(e)}")
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()
+
+
+
+
+
+
+

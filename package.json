@@ -23,9 +23,10 @@
     "package:win": "electron-builder --win",
     "package:mac": "electron-builder --mac",
     "package:all": "electron-builder --win --mac",
-    "build:ai": "python -m PyInstaller --onefile --collect-all vosk --distpath build-ai src/main/ai/vosk_bridge.py"
+    "build:ai": "python -m PyInstaller --onedir --collect-all vosk --distpath build-ai src/main/ai/vosk_bridge.py"
   },
   "dependencies": {
+    "@stagetimerio/grandiose": "^0.2.0",
     "better-sqlite3": "^11.3.0",
     "cors": "^2.8.6",
     "electron-store": "^8.2.0",
@@ -114,10 +115,10 @@
         ]
       },
       {
-        "from": "build-ai/",
-        "to": ".",
+        "from": "build-ai/vosk_bridge/",
+        "to": "vosk_bridge/",
         "filter": [
-          "vosk_bridge.exe"
+          "**/*"
         ]
       },
       {
@@ -156,9 +157,7 @@
     },
     "dmg": {
       "title": "Sanctuary"
-    }
-  },
-  "optionalDependencies": {
-    "grandiose": "^0.4.0"
+    },
+    "npmRebuild": false
   }
 }

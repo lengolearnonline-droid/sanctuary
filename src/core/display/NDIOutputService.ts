@@ -1,5 +1,5 @@
-﻿// ============================================================
-// Sanctuary — NDI Output Service
+// ============================================================
+// Sanctuary � NDI Output Service
 // ============================================================
 //
 // Manages NDI broadcast output. Uses `grandiose` (NewTek NDI native bindings)
@@ -76,7 +76,7 @@ export class NDIOutputService {
 
     try {
       // Dynamic import to isolate native dependencies
-      this.grandiose = require('grandiose');
+      this.grandiose = require('@stagetimerio/grandiose');
     } catch (e) {
       logger.error('Failed to load grandiose NDI bindings. NDI will be disabled.', { error: String(e) });
       this.health.status = 'ERROR';
@@ -222,4 +222,5 @@ export class NDIOutputService {
     return { ...this.health };
   }
 }
+
 

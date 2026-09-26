@@ -1,4 +1,4 @@
-﻿import { spawn, ChildProcess } from 'child_process';
+import { spawn, ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
 import path from 'path';
 
@@ -19,7 +19,7 @@ export class VoskEngine extends EventEmitter {
     const isPackaged = require('electron').app.isPackaged;
     
     // Switch back to instant offline vosk_bridge
-    const binaryName = process.platform === 'win32' ? 'vosk_bridge.exe' : 'vosk_bridge';
+    const binaryName = process.platform === 'win32' ? 'vosk_bridge/vosk_bridge.exe' : 'vosk_bridge/vosk_bridge';
     const prodScriptPath = path.join(process.resourcesPath, binaryName);
     const devScriptPath = path.join(__dirname, '../../../../src/main/ai/vosk_bridge.py');
     
@@ -107,6 +107,7 @@ export class VoskEngine extends EventEmitter {
     this.isReady = false;
   }
 }
+
 
 
 

@@ -13,8 +13,11 @@ export class RemoteServer extends EventEmitter {
   private wss: WebSocketServer;
   public port: number = 8080;
 
-  constructor() {
+  private db: any;
+
+  constructor(db: any) {
     super();
+    this.db = db;
     this.app = express();
     this.app.use(cors());
     
@@ -24,6 +27,35 @@ export class RemoteServer extends EventEmitter {
       : path.join(__dirname, '../../../../dist/remote');
       
     this.app.use(express.static(remotePath));
+
+    this.app.get('/api/songs', (req, res) => {
+      try {
+        const songs = this.db.getSongs();
+        res.json(songs);
+      } catch(e: any) { res.status(500).json({error: e.message}); }
+    });
+
+    this.app.get('/api/songs/:id/lyrics', (req, res) => {
+      try {
+        const sections = this.db.getSongSections(parseInt(req.params.id));
+        res.json(sections);
+      } catch(e: any) { res.status(500).json({error: e.message}); }
+    });
+
+    this.app.get('/api/bible/books', (req, res) => {
+      try {
+        const books = this.db.getBibleBooks('KJV'); // Hardcoded default for now
+        res.json(books);
+      } catch(e: any) { res.status(500).json({error: e.message}); }
+    });
+
+    this.app.get('/api/bible/verses', (req, res) => {
+      try {
+        const { book, chapter } = req.query;
+        const verses = this.db.getBibleVerses('KJV', book as string, parseInt(chapter as string));
+        res.json(verses);
+      } catch(e: any) { res.status(500).json({error: e.message}); }
+    });
 
     this.server = http.createServer(this.app);
     this.wss = new WebSocketServer({ server: this.server });

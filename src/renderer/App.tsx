@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 // Sanctuary — Main App Component
 // ============================================================
 
@@ -220,6 +220,16 @@ export function App() {
           console.log('SHOW_LYRICS', payload);
           // We can dispatch a custom event that SongsPage can listen to!
           window.dispatchEvent(new CustomEvent('ai:show_lyrics', { detail: payload }));
+        } else if (action === 'GO_LIVE_LYRIC') {
+          // Go live with a specific lyric directly
+          const { title, lyrics } = payload;
+          const store = usePresentationStore.getState();
+          store.setSlide({
+            id: 'remote-lyric-' + Date.now(),
+            type: 'song',
+            content: lyrics,
+            metadata: { title }
+          });
         }
       });
     }

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -12,100 +12,64 @@
       --text: #F9FAFB;
       --text-dim: #9CA3AF;
       --border: #374151;
-      --radius: 12px;
+      --radius: 8px;
     }
+    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
+      margin: 0; padding: 0;
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex; flex-direction: column;
+      height: 100vh; overflow: hidden;
     }
     .header {
       background: var(--surface);
-      padding: 16px;
-      text-align: center;
+      padding: 16px; text-align: center;
       border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
     }
-    .status {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #EF4444; /* red for disconnected */
+    .status { width: 12px; height: 12px; border-radius: 50%; background: #EF4444; }
+    .status.connected { background: #10B981; }
+    
+    .tabs {
+      display: flex; background: var(--surface); border-bottom: 1px solid var(--border);
     }
-    .status.connected {
-      background: #10B981; /* green */
+    .tab {
+      flex: 1; padding: 16px; text-align: center; color: var(--text-dim); font-weight: 600;
+      border-bottom: 2px solid transparent; cursor: pointer;
     }
-    .container {
-      flex: 1;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      overflow-y: auto;
+    .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    
+    .content { flex: 1; overflow-y: auto; padding: 12px; }
+    .hidden { display: none; }
+    
+    /* List Views */
+    .list-item {
+      padding: 16px; background: var(--surface); margin-bottom: 8px;
+      border-radius: var(--radius); border: 1px solid var(--border);
+      cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: space-between;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
+    .list-item:active { opacity: 0.7; }
+    
+    .lyric-item {
+      padding: 16px; background: var(--surface); margin-bottom: 8px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer;
     }
-    button {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 20px;
-      border-radius: var(--radius);
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: background 0.2s;
-      -webkit-tap-highlight-color: transparent;
+    .lyric-type { font-size: 12px; color: var(--primary); font-weight: bold; margin-bottom: 4px; text-transform: uppercase; }
+    
+    /* Footer Controls */
+    .footer {
+      background: var(--surface); padding: 12px; border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
     }
-    button:active {
-      background: var(--border);
+    .btn {
+      background: var(--bg); color: var(--text); border: 1px solid var(--border);
+      padding: 16px 8px; border-radius: var(--radius); font-weight: 600; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px;
     }
-    button.primary {
-      background: var(--primary);
-      border-color: var(--primary);
-    }
-    button.primary:active {
-      opacity: 0.8;
-    }
-    button.full {
-      grid-column: 1 / -1;
-    }
-    .search-box {
-      display: flex;
-      gap: 8px;
-    }
-    input {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 16px;
-      border-radius: var(--radius);
-      font-size: 16px;
-      outline: none;
-    }
-    input:focus {
-      border-color: var(--primary);
-    }
-    .search-btn {
-      padding: 16px 24px;
-    }
+    .btn:active { background: var(--border); }
+    .btn svg { width: 20px; height: 20px; }
+    
+    .breadcrumb { padding: 12px; font-size: 14px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+    .breadcrumb span { cursor: pointer; color: var(--primary); }
   </style>
 </head>
 <body>
@@ -114,80 +78,148 @@
     <div id="status" class="status"></div>
   </div>
 
-  <div class="container">
-    <div class="search-box">
-      <input type="text" id="search-input" placeholder="Search scripture or song..." enterkeyhint="go" />
-      <button class="primary search-btn" id="btn-show-scripture" style="font-size: 14px;">Show<br>Scripture</button>
-      <button class="primary search-btn" id="btn-show-song" style="font-size: 14px; background: #10B981; border-color: #10B981;">Show<br>Song</button>
-    </div>
+  <div class="tabs">
+    <div class="tab active" id="tab-bible" onclick="switchTab('bible')">Bible</div>
+    <div class="tab" id="tab-songs" onclick="switchTab('songs')">Songs</div>
+  </div>
 
-    <div class="grid">
-      <button id="btn-prev">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-        Previous
-      </button>
-      <button id="btn-next">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        Next
-      </button>
-      <button class="full" id="btn-clear" style="color: #EF4444; border-color: rgba(239, 68, 68, 0.3);">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-        Clear Screen
-      </button>
+  <!-- Bible View -->
+  <div id="view-bible" class="content">
+    <div id="bible-nav" class="breadcrumb hidden"></div>
+    <div id="bible-list"></div>
+  </div>
+
+  <!-- Songs View -->
+  <div id="view-songs" class="content hidden">
+    <div id="songs-nav" class="breadcrumb hidden"></div>
+    <div id="songs-list"></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="footer">
+    <div class="btn" onclick="sendCommand('PREV_SLIDE')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+      Prev
+    </div>
+    <div class="btn" onclick="sendCommand('CLEAR_ALL')" style="color: #EF4444;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      Clear
+    </div>
+    <div class="btn" onclick="sendCommand('NEXT_SLIDE')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+      Next
     </div>
   </div>
 
   <script>
     let ws;
     const statusEl = document.getElementById('status');
-    const inputEl = document.getElementById('search-input');
+    
+    let bibleState = { book: null, chapter: null };
+    let songState = { songId: null, title: null };
 
     function connect() {
-      // Connect to the same host over WS
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       ws = new WebSocket(protocol + '//' + window.location.host);
-
-      ws.onopen = () => {
-        statusEl.classList.add('connected');
-      };
-
-      ws.onclose = () => {
-        statusEl.classList.remove('connected');
-        setTimeout(connect, 2000); // Reconnect
-      };
-
-      ws.onerror = (err) => {
-        console.error('WS Error', err);
-      };
+      ws.onopen = () => statusEl.classList.add('connected');
+      ws.onclose = () => { statusEl.classList.remove('connected'); setTimeout(connect, 2000); };
     }
 
     function sendCommand(action, data = {}) {
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ action, ...data }));
-      }
+      if (ws && ws.readyState === 1) ws.send(JSON.stringify({ action, ...data }));
     }
 
-    document.getElementById('btn-prev').addEventListener('click', () => sendCommand('PREV_SLIDE'));
-    document.getElementById('btn-next').addEventListener('click', () => sendCommand('NEXT_SLIDE'));
-    document.getElementById('btn-clear').addEventListener('click', () => sendCommand('CLEAR_ALL'));
-    
-    document.getElementById('btn-show-scripture').addEventListener('click', () => {
-      const val = inputEl.value.trim();
-      if (val) { sendCommand('SHOW_VERSE', { reference: val }); inputEl.blur(); }
-    });
-    document.getElementById('btn-show-song').addEventListener('click', () => {
-      const val = inputEl.value.trim();
-      if (val) { sendCommand('SHOW_SONG', { title: val }); inputEl.blur(); }
-    });
+    function switchTab(tab) {
+      document.getElementById('tab-bible').classList.toggle('active', tab === 'bible');
+      document.getElementById('tab-songs').classList.toggle('active', tab === 'songs');
+      document.getElementById('view-bible').classList.toggle('hidden', tab !== 'bible');
+      document.getElementById('view-songs').classList.toggle('hidden', tab !== 'songs');
+      if (tab === 'bible' && !bibleState.book) loadBibleBooks();
+      if (tab === 'songs' && !songState.songId) loadSongs();
+    }
 
-    inputEl.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        document.getElementById('btn-show-scripture').click();
+    // Bible Logic
+    async function loadBibleBooks() {
+      bibleState = { book: null, chapter: null };
+      document.getElementById('bible-nav').classList.add('hidden');
+      const res = await fetch('/api/bible/books');
+      const books = await res.json();
+      let html = '';
+      books.forEach(b => {
+        html += <div class="list-item" onclick="loadBibleChapters('\', \)">\</div>;
+      });
+      document.getElementById('bible-list').innerHTML = html;
+    }
+
+    function loadBibleChapters(bookName, chaptersCount) {
+      bibleState = { book: bookName, chapter: null };
+      document.getElementById('bible-nav').classList.remove('hidden');
+      document.getElementById('bible-nav').innerHTML = <span onclick="loadBibleBooks()">Bible</span> > \;
+      
+      let html = '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">';
+      for(let i=1; i<=chaptersCount; i++) {
+        html += <div class="list-item" style="justify-content: center" onclick="loadBibleVerses('\', \)">\</div>;
       }
-    });
+      html += '</div>';
+      document.getElementById('bible-list').innerHTML = html;
+    }
+
+    async function loadBibleVerses(bookName, chapter) {
+      bibleState = { book: bookName, chapter: chapter };
+      document.getElementById('bible-nav').innerHTML = <span onclick="loadBibleBooks()">Bible</span> > <span onclick="loadBibleChapters('\', 0)">\</span> > Ch \;
+      
+      const res = await fetch(/api/bible/verses?book=\&chapter=\);
+      const verses = await res.json();
+      let html = '';
+      verses.forEach(v => {
+        html += <div class="lyric-item" onclick="goLiveVerse('\', \, \)">
+          <div class="lyric-type">Verse \</div>
+          <div>\</div>
+        </div>;
+      });
+      document.getElementById('bible-list').innerHTML = html;
+    }
+
+    function goLiveVerse(book, chapter, verse) {
+      sendCommand('SHOW_VERSE', { reference: \ \:\ });
+    }
+
+    // Songs Logic
+    async function loadSongs() {
+      songState = { songId: null, title: null };
+      document.getElementById('songs-nav').classList.add('hidden');
+      const res = await fetch('/api/songs');
+      const songs = await res.json();
+      let html = '';
+      songs.forEach(s => {
+        html += <div class="list-item" onclick="loadSongLyrics(\, '\')">\</div>;
+      });
+      document.getElementById('songs-list').innerHTML = html;
+    }
+
+    async function loadSongLyrics(songId, title) {
+      songState = { songId, title };
+      document.getElementById('songs-nav').classList.remove('hidden');
+      document.getElementById('songs-nav').innerHTML = <span onclick="loadSongs()">Songs</span> > \;
+      
+      const res = await fetch(/api/songs/\/lyrics);
+      const sections = await res.json();
+      let html = '';
+      sections.forEach(sec => {
+        html += <div class="lyric-item" onclick="goLiveLyric('\', \\\)">
+          <div class="lyric-type">\</div>
+          <div style="white-space: pre-wrap">\</div>
+        </div>;
+      });
+      document.getElementById('songs-list').innerHTML = html;
+    }
+
+    function goLiveLyric(title, lyrics) {
+      sendCommand('SHOW_LYRIC_DIRECT', { title, lyrics });
+    }
 
     connect();
+    loadBibleBooks();
   </script>
 </body>
 </html>
-

@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 // Sanctuary — Electron Main Process
 // ============================================================
 //
@@ -792,7 +792,7 @@ async function initializeApp(): Promise<void> {
   const { ScriptureExtractor } = require('./ai/ScriptureExtractor');
   const { CommandGateway } = require('./ai/CommandGateway');
   const { RemoteServer } = require('./remote/RemoteServer');
-  const remoteServer = new RemoteServer();
+  const remoteServer = new RemoteServer(db);
   remoteServer.start();
   
   // Hook remote control up to command gateway
@@ -800,8 +800,22 @@ async function initializeApp(): Promise<void> {
     if (data.action === 'NEXT_SLIDE') commandGateway.executeCommand({ intent: 'NEXT_SLIDE', confidence: 1, normalizedText: '' } as any, programWindow, stageWindow, mainWindow);
     if (data.action === 'PREV_SLIDE') commandGateway.executeCommand({ intent: 'PREVIOUS_SLIDE', confidence: 1, normalizedText: '' } as any, programWindow, stageWindow, mainWindow);
     if (data.action === 'CLEAR_ALL') commandGateway.executeCommand({ intent: 'CLEAR_SCREEN', confidence: 1, normalizedText: '' } as any, programWindow, stageWindow, mainWindow);
-    if (data.action === 'SHOW_VERSE' && data.reference) commandGateway.handleTranscript("show " + data.reference, true, programWindow, stageWindow, mainWindow);
-    if (data.action === 'SHOW_SONG' && data.title) commandGateway.handleTranscript("show lyrics " + data.title, true, programWindow, stageWindow, mainWindow);
+    if (data.action === 'SHOW_VERSE' && data.reference) {
+        const match = data.reference.match(/^(.+?)\s+(\d+):(\d+)$/);
+        if (match && mainWindow) {
+          mainWindow.webContents.send('ai:action', 'GO_LIVE_SCRIPTURE', {
+            book: match[1],
+            chapter: parseInt(match[2]),
+            verse: parseInt(match[3])
+          });
+        }
+      }
+      if (data.action === 'SHOW_LYRIC_DIRECT' && mainWindow) {
+        mainWindow.webContents.send('ai:action', 'GO_LIVE_LYRIC', {
+          title: data.title,
+          lyrics: data.lyrics
+        });
+      }
   });
   
   ipcMain.handle('remote:get_info', () => {
@@ -1019,6 +1033,8 @@ process.on('unhandledRejection', (reason) => {
 });
 
 }
+
+
 
 
 
