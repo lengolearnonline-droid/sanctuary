@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // Sanctuary — Command Gateway & Safety Gate
 // ============================================================
 
@@ -117,7 +117,11 @@ export class CommandGateway {
         stageWindow?.webContents.send('presentation:blackout', true);
         break;
 
-      case CommandIntent.SHOW_SCRIPTURE:
+      case CommandIntent.SHOW_LYRICS:
+          if (mainWindow) mainWindow.webContents.send('ai:action', 'SHOW_LYRICS', result.normalizedText);
+          break;
+
+        case CommandIntent.SHOW_SCRIPTURE:
         // When user approves or command has high confidence, we send a live action
         if (result.scriptureReference && mainWindow) {
           mainWindow.webContents.send('ai:action', 'GO_LIVE_SCRIPTURE', result.scriptureReference);
@@ -147,3 +151,4 @@ export class CommandGateway {
     }
   }
 }
+

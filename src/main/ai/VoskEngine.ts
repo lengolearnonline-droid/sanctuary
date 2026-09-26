@@ -1,4 +1,4 @@
-import { spawn, ChildProcess } from 'child_process';
+﻿import { spawn, ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
 import path from 'path';
 
@@ -66,14 +66,17 @@ export class VoskEngine extends EventEmitter {
         }
       });
 
+      let lastError = '';
       this.pythonProcess.stderr?.on('data', (data) => {
-        console.error('[Vosk Bridge stderr]', data.toString());
+        const text = data.toString();
+        console.error('[Vosk Bridge stderr]', text);
+        lastError = text;
       });
 
       this.pythonProcess.on('close', (code) => {
         console.log(`Vosk Bridge exited with code ${code}`);
         this.isReady = false;
-        require('electron').BrowserWindow.getAllWindows().forEach((win: any) => { win.webContents.send('ai:transcript:partial', "[AI Engine Crash. Code: " + code + "]"); });
+        require('electron').BrowserWindow.getAllWindows().forEach((win: any) => { win.webContents.send('ai:transcript:partial', "[AI Engine Crash. Code: " + code + ". Error: " + lastError + "]"); });
       });
 
     } catch (error) {
@@ -104,6 +107,7 @@ export class VoskEngine extends EventEmitter {
     this.isReady = false;
   }
 }
+
 
 
 

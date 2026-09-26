@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Button, Badge, Panel, toast } from '../../components/ui';
 import { Settings as SettingsIcon, Monitor, MonitorPlay, Save, Key, ShieldCheck } from 'lucide-react';
 
@@ -1078,7 +1079,7 @@ function RemoteControlPanel() {
         {remoteInfo ? (
           <div style={{ display: 'flex', gap: 'var(--space-6)', alignItems: 'center', background: 'var(--color-bg-primary)', padding: 'var(--space-4)', borderRadius: 'var(--radius-md)' }}>
             <div style={{ background: 'white', padding: '16px', borderRadius: '8px' }}>
-              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(remoteInfo.url)}`} alt="QR Code" width={150} height={150} />
+              <QRCodeSVG value={remoteInfo.url} size={150} level={"H"} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
               <span style={{ fontSize: '12px', textTransform: 'uppercase', color: 'var(--color-text-secondary)', fontWeight: 600 }}>Remote URL</span>
@@ -1097,4 +1098,5 @@ function RemoteControlPanel() {
     </Panel>
   );
 }
+
 

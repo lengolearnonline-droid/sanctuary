@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // Sanctuary — Songs Page
 // ============================================================
 
@@ -34,6 +34,12 @@ export function SongsPage() {
   // Load songs on mount
   useEffect(() => {
     loadSongs();
+    
+    const handleAiLyrics = (e: any) => {
+      setSearchQuery(e.detail);
+    };
+    window.addEventListener('ai:show_lyrics', handleAiLyrics);
+    return () => window.removeEventListener('ai:show_lyrics', handleAiLyrics);
   }, []);
 
   const loadSongs = async () => {
@@ -622,5 +628,6 @@ const btnStyleDanger: React.CSSProperties = {
 };
 
 export default SongsPage;
+
 
 

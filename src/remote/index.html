@@ -116,8 +116,9 @@
 
   <div class="container">
     <div class="search-box">
-      <input type="text" id="verse-input" placeholder="Search scripture (e.g. John 3:16)" enterkeyhint="go" />
-      <button class="primary search-btn" id="btn-show">Show</button>
+      <input type="text" id="search-input" placeholder="Search scripture or song..." enterkeyhint="go" />
+      <button class="primary search-btn" id="btn-show-scripture" style="font-size: 14px;">Show<br>Scripture</button>
+      <button class="primary search-btn" id="btn-show-song" style="font-size: 14px; background: #10B981; border-color: #10B981;">Show<br>Song</button>
     </div>
 
     <div class="grid">
@@ -139,7 +140,7 @@
   <script>
     let ws;
     const statusEl = document.getElementById('status');
-    const inputEl = document.getElementById('verse-input');
+    const inputEl = document.getElementById('search-input');
 
     function connect() {
       // Connect to the same host over WS
@@ -170,17 +171,18 @@
     document.getElementById('btn-next').addEventListener('click', () => sendCommand('NEXT_SLIDE'));
     document.getElementById('btn-clear').addEventListener('click', () => sendCommand('CLEAR_ALL'));
     
-    document.getElementById('btn-show').addEventListener('click', () => {
-      const ref = inputEl.value.trim();
-      if (ref) {
-        sendCommand('SHOW_VERSE', { reference: ref });
-        inputEl.blur();
-      }
+    document.getElementById('btn-show-scripture').addEventListener('click', () => {
+      const val = inputEl.value.trim();
+      if (val) { sendCommand('SHOW_VERSE', { reference: val }); inputEl.blur(); }
+    });
+    document.getElementById('btn-show-song').addEventListener('click', () => {
+      const val = inputEl.value.trim();
+      if (val) { sendCommand('SHOW_SONG', { title: val }); inputEl.blur(); }
     });
 
     inputEl.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
-        document.getElementById('btn-show').click();
+        document.getElementById('btn-show-scripture').click();
       }
     });
 
@@ -188,3 +190,4 @@
   </script>
 </body>
 </html>
+

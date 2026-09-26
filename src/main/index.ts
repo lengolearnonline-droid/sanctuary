@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // Sanctuary — Electron Main Process
 // ============================================================
 //
@@ -797,10 +797,11 @@ async function initializeApp(): Promise<void> {
   
   // Hook remote control up to command gateway
   remoteServer.on('message', (data: any, ws: any) => {
-    if (data.action === 'NEXT_SLIDE') commandGateway.executeCommand({ intent: 'next_slide', parameters: {} }, programWindow, stageWindow, mainWindow);
-    if (data.action === 'PREV_SLIDE') commandGateway.executeCommand({ intent: 'previous_slide', parameters: {} }, programWindow, stageWindow, mainWindow);
-    if (data.action === 'CLEAR_ALL') commandGateway.executeCommand({ intent: 'clear_all', parameters: {} }, programWindow, stageWindow, mainWindow);
-    if (data.action === 'SHOW_VERSE' && data.reference) commandGateway.executeCommand({ intent: 'show_scripture', parameters: { reference: data.reference } }, programWindow, stageWindow, mainWindow);
+    if (data.action === 'NEXT_SLIDE') commandGateway.executeCommand({ intent: 'NEXT_SLIDE', confidence: 1, normalizedText: '' } as any, programWindow, stageWindow, mainWindow);
+    if (data.action === 'PREV_SLIDE') commandGateway.executeCommand({ intent: 'PREVIOUS_SLIDE', confidence: 1, normalizedText: '' } as any, programWindow, stageWindow, mainWindow);
+    if (data.action === 'CLEAR_ALL') commandGateway.executeCommand({ intent: 'CLEAR_SCREEN', confidence: 1, normalizedText: '' } as any, programWindow, stageWindow, mainWindow);
+    if (data.action === 'SHOW_VERSE' && data.reference) commandGateway.handleTranscript("show " + data.reference, true, programWindow, stageWindow, mainWindow);
+    if (data.action === 'SHOW_SONG' && data.title) commandGateway.handleTranscript("show lyrics " + data.title, true, programWindow, stageWindow, mainWindow);
   });
   
   ipcMain.handle('remote:get_info', () => {
@@ -1018,6 +1019,9 @@ process.on('unhandledRejection', (reason) => {
 });
 
 }
+
+
+
 
 
 

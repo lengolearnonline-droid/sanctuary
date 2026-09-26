@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // Sanctuary — NDI Output Service
 // ============================================================
 //
@@ -37,6 +37,7 @@ export class NDIOutputService {
   // Bounded frame queue to prevent unbounded memory growth (backpressure)
   private readonly MAX_QUEUE_SIZE = 2;
   private frameQueue: { buffer: Buffer; width: number; height: number; timestamp: number }[] = [];
+    private lastFrame: { buffer: Buffer; width: number; height: number; timestamp: number } | null = null;
   
   private isProcessing = false;
   private frameTimer: NodeJS.Timeout | null = null;
@@ -138,10 +139,14 @@ export class NDIOutputService {
   }
 
   private async processNextFrame() {
-    if (this.isProcessing || this.frameQueue.length === 0 || !this.sender) return;
+    if (this.isProcessing || (!this.frameQueue.length && !this.lastFrame) || !this.sender) return;
 
     this.isProcessing = true;
-    const frame = this.frameQueue.shift()!;
+    const frame = this.frameQueue.shift() || this.lastFrame;
+    if (!frame) { this.isProcessing = false; return; }
+    this.lastFrame = frame;
+
+
     const processingStart = performance.now();
 
     try {
@@ -217,3 +222,4 @@ export class NDIOutputService {
     return { ...this.health };
   }
 }
+

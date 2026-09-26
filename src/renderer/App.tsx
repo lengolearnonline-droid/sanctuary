@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // Sanctuary — Main App Component
 // ============================================================
 
@@ -41,7 +41,7 @@ export function App() {
   const [licenseResult, setLicenseResult] = useState<{ valid: boolean; plan?: string; status?: string; daysLeft?: number } | null>(null);
   const [licenseChecked, setLicenseChecked] = useState(false);
 
-  // Check cached license on startup � avoid showing gate if already validated
+  // Check cached license on startup � avoid showing gate if already validated
   useEffect(() => {
     async function checkCachedLicense() {
       try {
@@ -208,6 +208,18 @@ export function App() {
           } catch (e) {
             console.error('Failed to go live with scripture', e);
           }
+        } else if (action === 'NEXT_SLIDE') {
+          const pStore = usePresentationStore.getState();
+          // Note: we'd need to compute the next slide in the list. 
+          // For now, emit a keyboard event to trigger the existing arrow key handler!
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+        } else if (action === 'PREVIOUS_SLIDE') {
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
+        } else if (action === 'SHOW_LYRICS') {
+          // Switch to songs workspace and focus search? Or just alert for now since we don't have a direct search hook in App.tsx
+          console.log('SHOW_LYRICS', payload);
+          // We can dispatch a custom event that SongsPage can listen to!
+          window.dispatchEvent(new CustomEvent('ai:show_lyrics', { detail: payload }));
         }
       });
     }
@@ -316,6 +328,7 @@ function PlaceholderPage({ title, description }: { title: string; description: s
     </div>
   );
 }
+
 
 
 
