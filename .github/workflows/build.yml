@@ -25,8 +25,6 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      # NDI 'grandiose' relies on native C++ compilation (node-gyp)
-      # windows-latest comes with Visual Studio Build Tools pre-installed.
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -44,11 +42,10 @@ jobs:
         env:
           GYP_MSVS_VERSION: 2022
         run: |
-          npm.cmd install -g node-gyp
-          $NodeGypPath = "$(npm.cmd root -g)\node-gyp\bin\node-gyp.js"
-          npm.cmd config set node_gyp $NodeGypPath
-          npm.cmd config set msvs_version 2022
-          npm.cmd install
+          $NodeDir = Split-Path (Get-Command node).Source
+          npm install -g npm@latest node-gyp --prefix $NodeDir
+          npm config set msvs_version 2022
+          npm install
 
       - name: Disable Windows Defender scanning (Prevents EBUSY locks on exe)
         run: Add-MpPreference -ExclusionPath $env:GITHUB_WORKSPACE
@@ -76,15 +73,3 @@ jobs:
           path: |
             release/*.exe
             release/*.zip
-
-
-
-
-
-
-
-
-
-
-
-
