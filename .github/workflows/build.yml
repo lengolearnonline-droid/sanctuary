@@ -44,11 +44,11 @@ jobs:
         env:
           GYP_MSVS_VERSION: 2022
         run: |
-          npm install -g npm@latest node-gyp
-          npm config set msvs_version 2022
-          npm install -g node-gyp
-          npm config set msvs_version 2022
-          npm install
+          npm.cmd install -g node-gyp
+          $NodeGypPath = "$(npm.cmd root -g)\node-gyp\bin\node-gyp.js"
+          npm.cmd config set node_gyp $NodeGypPath
+          npm.cmd config set msvs_version 2022
+          npm.cmd install
 
       - name: Disable Windows Defender scanning (Prevents EBUSY locks on exe)
         run: Add-MpPreference -ExclusionPath $env:GITHUB_WORKSPACE
@@ -76,6 +76,7 @@ jobs:
           path: |
             release/*.exe
             release/*.zip
+
 
 
 
