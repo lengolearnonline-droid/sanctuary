@@ -73,7 +73,7 @@ export class VoskEngine extends EventEmitter {
       this.pythonProcess.on('close', (code) => {
         console.log(`Vosk Bridge exited with code ${code}`);
         this.isReady = false;
-        require('electron').BrowserWindow.getAllWindows().forEach(win => { win.webContents.send('ai:transcript:partial', "[AI Engine Crash. Code: " + code + "]"); });
+        require('electron').BrowserWindow.getAllWindows().forEach((win: any) => { win.webContents.send('ai:transcript:partial', "[AI Engine Crash. Code: " + code + "]"); });
       });
 
     } catch (error) {
@@ -102,9 +102,9 @@ export class VoskEngine extends EventEmitter {
       this.pythonProcess = null;
     }
     this.isReady = false;
-        require('electron').BrowserWindow.getAllWindows().forEach(win => { win.webContents.send('ai:transcript:partial', "[AI Engine Crash. Code: " + code + "]"); });
   }
 }
+
 
 
 
