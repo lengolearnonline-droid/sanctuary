@@ -38,7 +38,10 @@ jobs:
           pip install pyinstaller vosk
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          npm install -g node-gyp
+          npm config set msvs_version 2022
+          npm install
 
       - name: Disable Windows Defender scanning (Prevents EBUSY locks on exe)
         run: Add-MpPreference -ExclusionPath $env:GITHUB_WORKSPACE
@@ -66,6 +69,7 @@ jobs:
           path: |
             release/*.exe
             release/*.zip
+
 
 
 

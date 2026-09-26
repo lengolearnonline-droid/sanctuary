@@ -158,6 +158,7 @@
     "dmg": {
       "title": "Sanctuary"
     },
-    "npmRebuild": false
+    "npmRebuild": true
   }
 }
+
