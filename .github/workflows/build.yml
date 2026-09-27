@@ -35,42 +35,27 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyinstaller vosk
 
-      - name: Setup MSVC Environment
-        uses: ilammy/msvc-dev-cmd@v1
-
-      - name: Eradicate Buggy node-gyp (Ultimate Fix)
-        run: |
-          npm.cmd install -g node-gyp@latest
-          $NpmDir = Split-Path (Get-Command npm.cmd).Source
-          $BuggyGyp = "$NpmDir\node_modules\npm\node_modules\node-gyp"
-          $GlobalModules = npm.cmd root -g
-          $GoodGyp = "$GlobalModules\node-gyp"
-          Remove-Item -Recurse -Force $BuggyGyp
-          Copy-Item -Recurse $GoodGyp $BuggyGyp
-        shell: powershell
-
       - name: Install Dependencies
-        run: npm.cmd install
+        run: npm install
 
       - name: Disable Windows Defender scanning (Prevents EBUSY locks on exe)
         run: Add-MpPreference -ExclusionPath $env:GITHUB_WORKSPACE
         shell: powershell
 
       - name: Build Python AI Bridge
-        run: npm.cmd run build:ai
+        run: npm run build:ai
 
       - name: Build Application (TypeScript)
-        run: npm.cmd run build
+        run: npm run build
 
       - name: Wait for Antivirus to release locks
         run: Start-Sleep -Seconds 15
         shell: powershell
 
       - name: Package Electron App (Windows)
-        run: npx.cmd electron-builder --win -p always
+        run: npx electron-builder --win -p always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GYP_MSVS_VERSION: 2022
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -79,4 +64,3 @@ jobs:
           path: |
             release/*.exe
             release/*.zip
-

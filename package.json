@@ -26,7 +26,6 @@
     "build:ai": "python -m PyInstaller --onedir --collect-all vosk --distpath build-ai src/main/ai/vosk_bridge.py"
   },
   "dependencies": {
-    "@stagetimerio/grandiose": "^0.2.0",
     "better-sqlite3": "^11.3.0",
     "cors": "^2.8.6",
     "electron-store": "^8.2.0",
@@ -85,7 +84,8 @@
     },
     "files": [
       "dist/**/*",
-      "bible-data/**/*"
+      "bible-data/**/*",
+      "vendor/**/*"
     ],
     "win": {
       "target": [
@@ -158,7 +158,9 @@
     "dmg": {
       "title": "Sanctuary"
     },
-    "npmRebuild": true
+    "npmRebuild": true,
+    "asarUnpack": [
+      "vendor/grandiose/**/*"
+    ]
   }
 }
-

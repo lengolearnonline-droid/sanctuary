@@ -76,7 +76,7 @@ export class NDIOutputService {
 
     try {
       // Dynamic import to isolate native dependencies
-      this.grandiose = require('@stagetimerio/grandiose');
+      this.grandiose = require(require('path').join(__dirname, '../../../../vendor/grandiose'));
     } catch (e) {
       logger.error('Failed to load grandiose NDI bindings. NDI will be disabled.', { error: String(e) });
       this.health.status = 'ERROR';
@@ -222,5 +222,7 @@ export class NDIOutputService {
     return { ...this.health };
   }
 }
+
+
 
 

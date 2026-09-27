@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="..">
+      <UniqueIdentifier>{13ED4249-1F9C-5F0F-2651-29A73F3A7059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\src">
+      <UniqueIdentifier>{F1003AD6-4B6D-45DF-3F56-5CAC869BF55E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{13ED4249-1F9C-5F0F-2651-29A73F3A7059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\src">
+      <UniqueIdentifier>{F1003AD6-4B6D-45DF-3F56-5CAC869BF55E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{13ED4249-1F9C-5F0F-2651-29A73F3A7059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\src">
+      <UniqueIdentifier>{F1003AD6-4B6D-45DF-3F56-5CAC869BF55E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{13ED4249-1F9C-5F0F-2651-29A73F3A7059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\src">
+      <UniqueIdentifier>{F1003AD6-4B6D-45DF-3F56-5CAC869BF55E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{13ED4249-1F9C-5F0F-2651-29A73F3A7059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\src">
+      <UniqueIdentifier>{F1003AD6-4B6D-45DF-3F56-5CAC869BF55E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{13ED4249-1F9C-5F0F-2651-29A73F3A7059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\src">
+      <UniqueIdentifier>{F1003AD6-4B6D-45DF-3F56-5CAC869BF55E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C:">
+      <UniqueIdentifier>{F87FD356-0FEB-9BC5-D1FA-368C81420008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C:\temp">
+      <UniqueIdentifier>{F41EAA3B-6947-92E5-A41B-5485B2530275}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C:\temp\grandiose">
+      <UniqueIdentifier>{26FC51E8-5201-CCB5-0AAB-72A850DAF866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C:\temp\grandiose\node_modules">
+      <UniqueIdentifier>{126A39EA-1D28-5689-C126-0DA0AB5837A0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C:\temp\grandiose\node_modules\node-gyp">
+      <UniqueIdentifier>{49558BB4-6D34-CA91-A65D-85A65792DC11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C:\temp\grandiose\node_modules\node-gyp\src">
+      <UniqueIdentifier>{F1003AD6-4B6D-45DF-3F56-5CAC869BF55E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{13ED4249-1F9C-5F0F-2651-29A73F3A7059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C:">
+      <UniqueIdentifier>{F87FD356-0FEB-9BC5-D1FA-368C81420008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C:\temp">
+      <UniqueIdentifier>{F41EAA3B-6947-92E5-A41B-5485B2530275}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C:\temp\grandiose">
+      <UniqueIdentifier>{26FC51E8-5201-CCB5-0AAB-72A850DAF866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C:\temp\grandiose\ndi">
+      <UniqueIdentifier>{504CECA5-989C-28FD-242E-E963C24E22D5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C:\temp\grandiose\ndi\lib">
+      <UniqueIdentifier>{9E038509-6CF8-00F6-D19C-D788E2A0B03B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C:\temp\grandiose\ndi\lib\win-x64">
+      <UniqueIdentifier>{20DAEC71-036B-A416-7879-7D720244DC52}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\grandiose_util.cc">
+      <Filter>..\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\grandiose_find.cc">
+      <Filter>..\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\grandiose_send.cc">
+      <Filter>..\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\grandiose_receive.cc">
+      <Filter>..\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\grandiose_routing.cc">
+      <Filter>..\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\grandiose.cc">
+      <Filter>..\src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\temp\grandiose\node_modules\node-gyp\src\win_delay_load_hook.cc">
+      <Filter>C:\temp\grandiose\node_modules\node-gyp\src</Filter>
+    </ClCompile>
+    <None Include="..\binding.gyp">
+      <Filter>..</Filter>
+    </None>
+    <None Include="C:\temp\grandiose\ndi\lib\win-x64\Processing.NDI.Lib.x64.dll">
+      <Filter>C:\temp\grandiose\ndi\lib\win-x64</Filter>
+    </None>
+  </ItemGroup>
+</Project>
