@@ -13,7 +13,7 @@ permissions:
 jobs:
   build-windows:
     name: Build Windows Application
-    runs-on: windows-2019
+    runs-on: windows-latest
 
     steps:
       - name: Checkout Code
@@ -24,6 +24,12 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
+
+      - name: Update NPM (Fixes node-gyp VS2022 bug)
+        run: |
+          npm install -g npm@latest
+          $NpmDir = npm config get prefix
+          echo "$NpmDir" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -64,6 +70,3 @@ jobs:
           path: |
             release/*.exe
             release/*.zip
-
-
-
