@@ -77,7 +77,7 @@ export class RemoteServer extends EventEmitter {
 
   start() {
     this.server.listen(this.port, '0.0.0.0', () => {
-      console.log(Remote control server running on port );
+      console.log("Remote control server running on port " + this.port);
     });
   }
 
@@ -93,3 +93,4 @@ export class RemoteServer extends EventEmitter {
     return '127.0.0.1';
   }
 }
+
