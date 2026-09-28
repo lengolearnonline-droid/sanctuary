@@ -1,6 +1,8 @@
 import sys
 import json
 import os
+import shutil
+import tempfile
 from vosk import Model, KaldiRecognizer, SetLogLevel
 
 SetLogLevel(0)
@@ -19,12 +21,23 @@ def main():
         log("Missing model path argument")
         sys.exit(1)
 
-    import ctypes; model_path = os.path.abspath(sys.argv[1]); buf = ctypes.create_unicode_buffer(256); ctypes.windll.kernel32.GetShortPathNameW(model_path, buf, 256); model_path = buf.value if buf.value else model_path
-    log(f"Model path: {model_path}")
+    model_path = os.path.abspath(sys.argv[1])
+    log(f"Original Model path: {model_path}")
     
     if not os.path.exists(model_path):
         log("Model not found")
         sys.exit(1)
+
+    if " " in model_path:
+        temp_dir = os.path.join(tempfile.gettempdir(), "vosk_sanctuary_model")
+        log(f"Space detected in path, copying model to {temp_dir}")
+        try:
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir, ignore_errors=True)
+            shutil.copytree(model_path, temp_dir)
+            model_path = temp_dir
+        except BaseException as e:
+            log(f"Failed to copy model: {str(e)}")
 
     try:
         log("Loading Model...")
@@ -39,11 +52,8 @@ def main():
     log("Sending ready signal")
     print(json.dumps({"type": "ready"}), flush=True)
 
-    # Read audio chunks from stdin and process them
-    # Electron will send raw PCM 16kHz 16-bit mono bytes
     try:
         while True:
-        # Read 4000 bytes at a time (standard chunk size)
             data = sys.stdin.buffer.read(4000)
             if len(data) == 0:
                 break
@@ -60,10 +70,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-

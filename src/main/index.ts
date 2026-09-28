@@ -45,7 +45,10 @@ let songImporter: SongImporter;
 let lyricsFetcher: LyricsFetcher;
 let mediaManager: MediaManager;
 let themeManager: ThemeManager;
+const { RemoteServer } = require('./remote/RemoteServer');
 let lowerThirdManager: LowerThirdManager;
+let remoteServer: any;
+let commandGateway: any;
 let outputManager: OutputManager;
 let obsService: OBSService;
 let vmixService: VMixService;
@@ -747,6 +750,26 @@ async function initializeApp(): Promise<void> {
   mediaManager = new MediaManager(db);
   themeManager = new ThemeManager(db);
   lowerThirdManager = new LowerThirdManager(db);
+  remoteServer = new RemoteServer(db, bibleEngine, songManager);
+  remoteServer.start();
+  remoteServer.on('message', (data: any, ws: any) => {
+    if (data.action === 'NEXT_SLIDE') commandGateway.executeCommand({ intent: 'NEXT_SLIDE', confidence: 1, normalizedText: '' } as any, programWindow, stageWindow, mainWindow);
+    if (data.action === 'PREV_SLIDE') commandGateway.executeCommand({ intent: 'PREVIOUS_SLIDE', confidence: 1, normalizedText: '' } as any, programWindow, stageWindow, mainWindow);
+    if (data.action === 'CLEAR_ALL') commandGateway.executeCommand({ intent: 'CLEAR_SCREEN', confidence: 1, normalizedText: '' } as any, programWindow, stageWindow, mainWindow);
+    if (data.action === 'SHOW_VERSE' && data.reference) {
+      const match = data.reference.match(/^(.+?)\s+(\d+):(\d+)$/);
+      if (match && mainWindow) {
+        mainWindow.webContents.send('ai:action', 'GO_LIVE_SCRIPTURE', {
+          book: match[1], chapter: parseInt(match[2]), verse: parseInt(match[3])
+        });
+      }
+    }
+    if (data.action === 'SHOW_LYRIC_DIRECT' && mainWindow) {
+      mainWindow.webContents.send('ai:action', 'GO_LIVE_LYRIC', {
+        title: data.title, lyrics: data.lyrics
+      });
+    }
+  });
 
   // Initialize output manager
   outputManager = new OutputManager(db);
@@ -791,10 +814,7 @@ async function initializeApp(): Promise<void> {
   const { VoskEngine } = require('./ai/VoskEngine');
   const { ScriptureExtractor } = require('./ai/ScriptureExtractor');
   const { CommandGateway } = require('./ai/CommandGateway');
-  const { RemoteServer } = require('./remote/RemoteServer');
-  const remoteServer = new RemoteServer(db);
-  remoteServer.start();
-  
+    
   // Hook remote control up to command gateway
   remoteServer.on('message', (data: any, ws: any) => {
     if (data.action === 'NEXT_SLIDE') commandGateway.executeCommand({ intent: 'NEXT_SLIDE', confidence: 1, normalizedText: '' } as any, programWindow, stageWindow, mainWindow);
@@ -1033,6 +1053,9 @@ process.on('unhandledRejection', (reason) => {
 });
 
 }
+
+
+
 
 
 

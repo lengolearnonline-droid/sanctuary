@@ -1,50 +1,53 @@
 import express from 'express';
+import WebSocket from 'ws';
 import http from 'http';
-import { WebSocketServer, WebSocket } from 'ws';
-import path from 'path';
+import os from 'os';
 import cors from 'cors';
-import { networkInterfaces } from 'os';
+import path from 'path';
 import { EventEmitter } from 'events';
-import { app } from 'electron';
 
 export class RemoteServer extends EventEmitter {
-  private app: express.Express;
-  private server: http.Server;
-  private wss: WebSocketServer;
+  public app: express.Express;
+  public server: http.Server;
+  public wss: WebSocket.Server;
   public port: number = 8080;
 
   private db: any;
+  private bibleEngine: any;
+  private songManager: any;
 
-  constructor(db: any) {
+  constructor(db: any, bibleEngine: any, songManager: any) {
     super();
     this.db = db;
+    this.bibleEngine = bibleEngine;
+    this.songManager = songManager;
     this.app = express();
     this.app.use(cors());
-    
-    // Serve static files for the web remote
-    const remotePath = app.isPackaged 
+
+    const isPackaged = __dirname.includes('app.asar');
+    const remotePath = isPackaged 
       ? path.join(process.resourcesPath, 'remote') 
-      : path.join(__dirname, '../../../../dist/remote');
+      : path.join(__dirname, '../../../../src/remote'); // Changed to src/remote because index.html is there!
       
     this.app.use(express.static(remotePath));
 
     this.app.get('/api/songs', (req, res) => {
       try {
-        const songs = this.db.getSongs();
+        const songs = this.songManager.listSongs(100);
         res.json(songs);
       } catch(e: any) { res.status(500).json({error: e.message}); }
     });
 
     this.app.get('/api/songs/:id/lyrics', (req, res) => {
       try {
-        const sections = this.db.getSongSections(parseInt(req.params.id));
-        res.json(sections);
+        const song = this.songManager.getSong(req.params.id);
+        res.json(song ? song.sections : []);
       } catch(e: any) { res.status(500).json({error: e.message}); }
     });
 
     this.app.get('/api/bible/books', (req, res) => {
       try {
-        const books = this.db.getBibleBooks('KJV'); // Hardcoded default for now
+        const books = this.bibleEngine.getBooks();
         res.json(books);
       } catch(e: any) { res.status(500).json({error: e.message}); }
     });
@@ -52,57 +55,38 @@ export class RemoteServer extends EventEmitter {
     this.app.get('/api/bible/verses', (req, res) => {
       try {
         const { book, chapter } = req.query;
-        const verses = this.db.getBibleVerses('KJV', book as string, parseInt(chapter as string));
+        const verses = this.bibleEngine.getVerses(book as string, parseInt(chapter as string));
         res.json(verses);
       } catch(e: any) { res.status(500).json({error: e.message}); }
     });
 
     this.server = http.createServer(this.app);
-    this.wss = new WebSocketServer({ server: this.server });
+    this.wss = new WebSocket.Server({ server: this.server });
 
-    this.wss.on('connection', (ws: WebSocket) => {
-      console.log('[Remote] Client connected');
-      
+    this.wss.on('connection', (ws) => {
       ws.on('message', (message: string) => {
         try {
-          const data = JSON.parse(message);
+          const data = JSON.parse(message.toString());
           this.emit('message', data, ws);
         } catch (e) {
-          console.error('[Remote] Failed to parse message', e);
+          console.error('Invalid remote control message', e);
         }
       });
-
-      ws.send(JSON.stringify({ type: 'welcome', version: app.getVersion() }));
     });
   }
 
-  public start() {
+  start() {
     this.server.listen(this.port, '0.0.0.0', () => {
-      console.log(`[Remote] Server listening on port ` + this.port);
+      console.log(Remote control server running on port );
     });
   }
 
-  public stop() {
-    this.wss.close();
-    this.server.close();
-  }
-
-  public broadcast(data: any) {
-    const payload = JSON.stringify(data);
-    this.wss.clients.forEach(client => {
-      if (client.readyState === 1) { // OPEN
-        client.send(payload);
-      }
-    });
-  }
-
-  public getLocalIp(): string {
-    const nets = networkInterfaces();
-    for (const name of Object.keys(nets)) {
-      for (const net of nets[name] || []) {
-        // Skip over non-IPv4 and internal (i.e. 127.0.0.1)
-        if (net.family === 'IPv4' && !net.internal) {
-          return net.address;
+  getLocalIp() {
+    const interfaces = os.networkInterfaces();
+    for (const name of Object.keys(interfaces)) {
+      for (const iface of interfaces[name]!) {
+        if (iface.family === 'IPv4' && !iface.internal) {
+          return iface.address;
         }
       }
     }

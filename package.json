@@ -134,6 +134,10 @@
         "filter": [
           "**/*"
         ]
+      },
+      {
+        "from": "vendor/grandiose",
+        "to": "grandiose"
       }
     ],
     "mac": {
@@ -158,9 +162,6 @@
     "dmg": {
       "title": "Sanctuary"
     },
-    "npmRebuild": true,
-    "asarUnpack": [
-      "vendor/grandiose/**/*"
-    ]
+    "npmRebuild": true
   }
 }
