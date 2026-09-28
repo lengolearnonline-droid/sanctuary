@@ -1,0 +1,2 @@
+# Disable CRLF conversion for Vosk model files
+src/main/ai/model/** binary
