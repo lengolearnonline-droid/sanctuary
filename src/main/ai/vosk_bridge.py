@@ -1,6 +1,8 @@
 import sys
 import json
 import os
+os.environ['OPENBLAS_CORETYPE'] = 'NEHALEM'
+os.environ['OPENBLAS_NUM_THREADS'] = '1'
 import shutil
 import tempfile
 from vosk import Model, KaldiRecognizer, SetLogLevel

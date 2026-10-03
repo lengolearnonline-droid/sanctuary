@@ -89,7 +89,7 @@ export class NDIOutputService {
       // Note: grandiose.send({ name, colorFormat, ... })
       this.sender = await this.grandiose.send({
         name: this.settings.sourceName,
-        colorFormat: this.settings.alpha === 'transparent' ? this.grandiose.COLOR_FORMAT_BGRA_BGRA : this.grandiose.COLOR_FORMAT_UYVY_BGRA,
+        colorFormat: this.settings.alpha === 'transparent' ? this.grandiose.COLOR_FORMAT_BGRX_BGRA : this.grandiose.COLOR_FORMAT_UYVY_BGRA,
         clockVideo: true, // Let NDI SDK handle clocking based on submission
         clockAudio: false
       });
