@@ -18,19 +18,21 @@ export class VoskEngine extends EventEmitter {
   start() {
     const isPackaged = require('electron').app.isPackaged;
     
-    // Switch back to instant offline vosk_bridge
-    const binaryName = process.platform === 'win32' ? 'vosk_bridge/vosk_bridge.exe' : 'vosk_bridge/vosk_bridge';
-    const prodScriptPath = path.join(process.resourcesPath, binaryName);
+    // Switch back to instant offline vosk_bridge using portable python
+    const prodPythonPath = path.join(process.resourcesPath, 'vosk_bridge/python/python.exe');
+    const prodScriptPath = path.join(process.resourcesPath, 'vosk_bridge/vosk_bridge.py');
     const devScriptPath = path.join(__dirname, '../../../../src/main/ai/vosk_bridge.py');
     
-    const command = isPackaged ? prodScriptPath : (process.platform === 'win32' ? 'python' : 'python3');
+    const command = isPackaged 
+        ? (process.platform === 'win32' ? prodPythonPath : 'python3') 
+        : (process.platform === 'win32' ? 'python' : 'python3');
     
     // Define the model path
     const modelPath = isPackaged 
       ? path.join(process.resourcesPath, 'model') 
       : path.join(__dirname, '../../../../src/main/ai/model');
 
-    const args = isPackaged ? [modelPath] : [devScriptPath, modelPath];
+    const args = isPackaged ? [prodScriptPath, modelPath] : [devScriptPath, modelPath];
 
     try {
       this.pythonProcess = spawn(command, args, { stdio: ['pipe', 'pipe', 'pipe'] });

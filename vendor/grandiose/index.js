@@ -15,10 +15,19 @@
 
 const path = require("path")
 
-const addon = require('bindings')({
-  bindings: "grandiose",
-  module_root: path.resolve(__dirname)
-});
+let addon;
+try {
+  addon = require('./bin/win32-x64-128/grandiose.node');
+} catch (e) {
+  try {
+    addon = require('./build/Release/grandiose.node');
+  } catch (e2) {
+    addon = require('bindings')({
+      bindings: "grandiose",
+      module_root: path.resolve(__dirname)
+    });
+  }
+}
 
 const COLOR_FORMAT_BGRX_BGRA = 0; // No alpha channel: BGRX, Alpha channel: BGRA
 const COLOR_FORMAT_UYVY_BGRA = 1; // No alpha channel: UYVY, Alpha channel: BGRA
